@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/compressor" />
+            <option value="$PROJECT_DIR$/intentutil" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

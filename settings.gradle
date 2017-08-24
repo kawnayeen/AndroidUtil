@@ -1,1 +1,1 @@
-include ':app', ':compressor'
+include ':app', ':compressor', ':intentutil'
