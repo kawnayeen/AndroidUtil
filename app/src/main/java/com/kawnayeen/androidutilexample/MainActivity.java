@@ -6,18 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.kawnayeen.intentutil.ImagePicker;
 
 public class MainActivity extends AppCompatActivity {
 
     Button clickMe;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        clickMe = findViewById(R.id.clickMe);
+        clickMe = findViewById(R.id.pickImage);
+        imageView = findViewById(R.id.pickedImage);
         clickMe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case PICK_IMAGE_ID:
                 Bitmap bitmap = ImagePicker.getImageFromResult(this, resultCode, data);
-                // TODO use bitmap
+                imageView.setImageBitmap(bitmap);
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);

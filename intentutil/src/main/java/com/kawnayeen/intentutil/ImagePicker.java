@@ -11,12 +11,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Parcelable;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,11 +33,14 @@ public class ImagePicker {
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
     private static final String TAG = "ImagePicker";
     private static final String TEMP_IMAGE_NAME = "tempImage";
-
-    public static int minWidthQuality = DEFAULT_MIN_WIDTH_QUALITY;
-
+    private static boolean strictModeBypassed = false;
+    private static int minWidthQuality = DEFAULT_MIN_WIDTH_QUALITY;
 
     public static Intent getPickImageIntent(Context context) {
+        if (!strictModeBypassed) {
+            bypassStrictMode();
+        }
+
         Intent chooserIntent = null;
 
         List<Intent> intentList = new ArrayList<>();
@@ -54,6 +60,18 @@ public class ImagePicker {
         }
 
         return chooserIntent;
+    }
+
+    private static void bypassStrictMode() {
+        if (Build.VERSION.SDK_INT >= 24) {
+            try {
+                Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
+                m.invoke(null);
+                strictModeBypassed = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -95,8 +113,8 @@ public class ImagePicker {
 
 
     private static File getTempFile(Context context) {
-        File imageFile = new File(context.getExternalCacheDir(), TEMP_IMAGE_NAME);
-        imageFile.getParentFile().mkdirs();
+        File imageFile = new File(context.getExternalFilesDir(null), TEMP_IMAGE_NAME);
+        imageFile.setWritable(true);
         return imageFile;
     }
 
@@ -124,7 +142,7 @@ public class ImagePicker {
      * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
      **/
     private static Bitmap getImageResized(Context context, Uri selectedImage) {
-        Bitmap bm = null;
+        Bitmap bm;
         int[] sampleSizes = new int[]{5, 3, 2, 1};
         int i = 0;
         do {
@@ -174,7 +192,7 @@ public class ImagePicker {
         return rotate;
     }
 
-    public static int getRotationFromGallery(Context context, Uri imageUri) {
+    private static int getRotationFromGallery(Context context, Uri imageUri) {
         int result = 0;
         String[] columns = {MediaStore.Images.Media.ORIENTATION};
         Cursor cursor = null;
