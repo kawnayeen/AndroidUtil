@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,17 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Author: Mario Velasco Casquero
- * Date: 08/09/2015
- * Email: m3ario@gmail.com
+ * All Credit : https://gist.github.com/Mariovc/f06e70ebe8ca52fbbbe2
  */
 public class ImagePicker {
 
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
-    private static final String TAG = "ImagePicker";
     private static final String TEMP_IMAGE_NAME = "tempImage";
     private static boolean strictModeBypassed = false;
-    private static int minWidthQuality = DEFAULT_MIN_WIDTH_QUALITY;
 
     public static Intent getPickImageIntent(Context context) {
         if (!strictModeBypassed) {
@@ -68,8 +63,7 @@ public class ImagePicker {
                 Method m = StrictMode.class.getMethod("disableDeathOnFileUriExposure");
                 m.invoke(null);
                 strictModeBypassed = true;
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Exception ignored) {
             }
         }
     }
@@ -81,7 +75,6 @@ public class ImagePicker {
             Intent targetedIntent = new Intent(intent);
             targetedIntent.setPackage(packageName);
             list.add(targetedIntent);
-            Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
         }
         return list;
     }
@@ -89,7 +82,6 @@ public class ImagePicker {
 
     public static Bitmap getImageFromResult(Context context, int resultCode,
                                             Intent imageReturnedIntent) {
-        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
         Bitmap bm = null;
         File imageFile = getTempFile(context);
         if (resultCode == Activity.RESULT_OK) {
@@ -102,7 +94,6 @@ public class ImagePicker {
             } else {            /** ALBUM **/
                 selectedImage = imageReturnedIntent.getData();
             }
-            Log.d(TAG, "selectedImage: " + selectedImage);
 
             bm = getImageResized(context, selectedImage);
             int rotation = getRotation(context, selectedImage, isCamera);
@@ -131,10 +122,6 @@ public class ImagePicker {
 
         Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
                 fileDescriptor.getFileDescriptor(), null, options);
-
-        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
-                actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
-
         return actuallyUsableBitmap;
     }
 
@@ -147,9 +134,8 @@ public class ImagePicker {
         int i = 0;
         do {
             bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
-            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
             i++;
-        } while (bm.getWidth() < minWidthQuality && i < sampleSizes.length);
+        } while (bm.getWidth() < DEFAULT_MIN_WIDTH_QUALITY && i < sampleSizes.length);
         return bm;
     }
 
@@ -161,14 +147,12 @@ public class ImagePicker {
         } else {
             rotation = getRotationFromGallery(context, imageUri);
         }
-        Log.d(TAG, "Image rotation: " + rotation);
         return rotation;
     }
 
     private static int getRotationFromCamera(Context context, Uri imageFile) {
         int rotate = 0;
         try {
-
             context.getContentResolver().notifyChange(imageFile, null);
             ExifInterface exif = new ExifInterface(imageFile.getPath());
             int orientation = exif.getAttributeInt(
@@ -202,16 +186,13 @@ public class ImagePicker {
                 int orientationColumnIndex = cursor.getColumnIndex(columns[0]);
                 result = cursor.getInt(orientationColumnIndex);
             }
-        } catch (Exception e) {
-            //Do nothing
+        } catch (Exception ignored) {
         } finally {
-            if (cursor != null) {
+            if (cursor != null)
                 cursor.close();
-            }
-        }//End of try-catch blgit ock
+        }
         return result;
     }
-
 
     private static Bitmap rotate(Bitmap bm, int rotation) {
         if (rotation != 0) {
