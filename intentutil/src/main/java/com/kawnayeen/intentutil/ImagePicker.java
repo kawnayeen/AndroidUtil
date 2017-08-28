@@ -115,7 +115,7 @@ public class ImagePicker {
         if (resultCode == Activity.RESULT_OK) {
             if (isFromCamera(imageReturnedIntent))
                 return getTempFile(context);
-            return new File(getAbsolutePathFromUri(imageReturnedIntent.getData(),context));
+            return new File(getAbsolutePathFromUri(imageReturnedIntent.getData(), context));
         }
         return null;
     }
@@ -235,7 +235,6 @@ public class ImagePicker {
             }
             imageCursor.close();
         }
-        //Log.i("kamarul", Environment.getExternalStorageState() + result);
         return result;
     }
 }
