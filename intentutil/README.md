@@ -1,4 +1,4 @@
-Intent Util
+Image Picker Intent
 ===========
 
 Very simple use case --
@@ -24,7 +24,8 @@ Assuming `protected void onActivityResult(int requestCode, int resultCode, Inten
 
 Permissions
 ------------
-Add the following permission in your manifest file `<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />`
+Add the following permission in your manifest file <br/>
+`<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />`
 
 For android version `marshmallow` and above, check whether the permission is granted or not before calling startActivityForResult
 
