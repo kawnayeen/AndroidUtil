@@ -19,7 +19,9 @@ import android.provider.MediaStore;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,23 +30,23 @@ import java.util.List;
 public class ImagePicker {
 
     private static final int DEFAULT_MIN_WIDTH_QUALITY = 400;        // min pixels
-    private static final String TEMP_IMAGE_NAME = "tempImage";
+    private static final String TEMP_IMG_PREFIX = "TEMP_IMG";
+    private static final String TEMP_IMG_SUFFIX = ".JPG";
+    private static String lastTempImg = "";
     private static boolean strictModeBypassed = false;
 
     public static Intent getPickImageIntent(Context context) {
         if (!strictModeBypassed) {
             bypassStrictMode();
         }
-
         Intent chooserIntent = null;
-
         List<Intent> intentList = new ArrayList<>();
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePhotoIntent.putExtra("return-data", true);
-        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempFile(context)));
+        takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(prepareNextImgFile(context)));
         intentList = addIntentsToList(context, intentList, pickIntent);
         intentList = addIntentsToList(context, intentList, takePhotoIntent);
 
@@ -68,6 +70,22 @@ public class ImagePicker {
         }
     }
 
+    private static File prepareNextImgFile(Context context) {
+        // cleaning up old temp file
+        if (!lastTempImg.isEmpty()) {
+            File file = new File(context.getExternalFilesDir(null), lastTempImg);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        // creating new file
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        lastTempImg = TEMP_IMG_PREFIX + timeStamp + TEMP_IMG_SUFFIX;
+        File imageFile = new File(context.getExternalFilesDir(null), lastTempImg);
+        imageFile.setWritable(true);
+        return imageFile;
+    }
+
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
         List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
         for (ResolveInfo resolveInfo : resInfo) {
@@ -83,18 +101,9 @@ public class ImagePicker {
     public static Bitmap getImageFromResult(Context context, int resultCode,
                                             Intent imageReturnedIntent) {
         Bitmap bm = null;
-        File imageFile = getTempFile(context);
         if (resultCode == Activity.RESULT_OK) {
-            Uri selectedImage;
-            boolean isCamera = (imageReturnedIntent == null ||
-                    imageReturnedIntent.getData() == null ||
-                    imageReturnedIntent.getData().toString().contains(imageFile.toString()));
-            if (isCamera) {     /** CAMERA **/
-                selectedImage = Uri.fromFile(imageFile);
-            } else {            /** ALBUM **/
-                selectedImage = imageReturnedIntent.getData();
-            }
-
+            boolean isCamera = isFromCamera(imageReturnedIntent);
+            Uri selectedImage = isCamera ? Uri.fromFile(getTempFile(context)) : imageReturnedIntent.getData();
             bm = getImageResized(context, selectedImage);
             int rotation = getRotation(context, selectedImage, isCamera);
             bm = rotate(bm, rotation);
@@ -102,11 +111,22 @@ public class ImagePicker {
         return bm;
     }
 
+    public static File getImageFileToUpload(Context context, int resultCode, Intent imageReturnedIntent) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (isFromCamera(imageReturnedIntent))
+                return getTempFile(context);
+            return new File(getAbsolutePathFromUri(imageReturnedIntent.getData(),context));
+        }
+        return null;
+    }
+
+    private static boolean isFromCamera(Intent imageReturnedIntent) {
+        return !lastTempImg.isEmpty() && (imageReturnedIntent == null || imageReturnedIntent.getData() == null
+                || imageReturnedIntent.getData().toString().contains(lastTempImg));
+    }
 
     private static File getTempFile(Context context) {
-        File imageFile = new File(context.getExternalFilesDir(null), TEMP_IMAGE_NAME);
-        imageFile.setWritable(true);
-        return imageFile;
+        return new File(context.getExternalFilesDir(null), lastTempImg);
     }
 
     private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
@@ -141,13 +161,7 @@ public class ImagePicker {
 
 
     private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
-        int rotation;
-        if (isCamera) {
-            rotation = getRotationFromCamera(context, imageUri);
-        } else {
-            rotation = getRotationFromGallery(context, imageUri);
-        }
-        return rotation;
+        return isCamera ? getRotationFromCamera(context, imageUri) : getRotationFromGallery(context, imageUri);
     }
 
     private static int getRotationFromCamera(Context context, Uri imageFile) {
@@ -201,5 +215,27 @@ public class ImagePicker {
             return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
         }
         return bm;
+    }
+
+    private static String getAbsolutePathFromUri(Uri uri, Context context) {
+        String result = "";
+        String documentID;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            String[] pathParts = uri.getPath().split("/");
+            documentID = pathParts[pathParts.length - 1];
+        } else {
+            String pathSegments[] = uri.getLastPathSegment().split(":");
+            documentID = pathSegments[pathSegments.length - 1];
+        }
+        String mediaPath = MediaStore.Images.Media.DATA;
+        Cursor imageCursor = context.getContentResolver().query(uri, new String[]{mediaPath}, MediaStore.Images.Media._ID + "=" + documentID, null, null);
+        if (imageCursor != null) {
+            if (imageCursor.moveToFirst()) {
+                result = imageCursor.getString(imageCursor.getColumnIndex(mediaPath));
+            }
+            imageCursor.close();
+        }
+        //Log.i("kamarul", Environment.getExternalStorageState() + result);
+        return result;
     }
 }

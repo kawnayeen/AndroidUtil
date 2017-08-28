@@ -7,17 +7,38 @@
     tools:context="com.kawnayeen.androidutilexample.MainActivity">
 
     <Button
-        android:id="@+id/pickImage"
-        android:layout_width="150dp"
+        android:id="@+id/pickImageBitmap"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="15dp"
-        android:text="Pick Image" />
+        android:layout_margin="5dp"
+        android:text="Pick Image Bitmap"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/pickImageFile"
+        android:layout_width="225dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:text="Pick Image File"
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/pickedImage"
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center"
-        android:layout_margin="20dp" />
+        android:layout_margin="20dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/imageFileInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="Path : x, Size: y"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:visibility="gone" />
 </LinearLayout>
