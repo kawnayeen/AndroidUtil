@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kawnayeen.androidutilexample.MultipleImagePicking">
+
+    <Button
+        android:id="@+id/takePicOne"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:text="Take Picture One" />
+
+    <Button
+        android:id="@+id/takePicTwo"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:text="Take Picture Two" />
+
+    <Button
+        android:id="@+id/takePicThree"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="4dp"
+        android:padding="4dp"
+        android:text="Take Picture Three" />
+
+    <TextView
+        android:id="@+id/descriptionOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="File # 1 Description" />
+
+    <TextView
+        android:id="@+id/descriptionTwo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="File # 2 Description" />
+
+    <TextView
+        android:id="@+id/descriptionThree"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:text="File # 3 Description" />
+</LinearLayout>

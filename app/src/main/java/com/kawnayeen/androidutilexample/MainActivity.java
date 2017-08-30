@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     Button pickImageBitmap;
     Button pickImageFile;
+    Button testMultiple;
     ImageView bitmapView;
     TextView fileInfo;
     private static final int REQUEST_READ_STORAGE = 3;
@@ -33,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
         bitmapView = findViewById(R.id.pickedImage);
         pickImageFile = findViewById(R.id.pickImageFile);
         fileInfo = findViewById(R.id.imageFileInfo);
+        testMultiple = findViewById(R.id.testMultipleImage);
         pickImageBitmap.setOnClickListener(view -> onPickImage(PICK_IMAGE_BITMAP_ID));
         pickImageFile.setOnClickListener(view -> onPickImage(PICK_IMAGE_FILE_ID));
+        testMultiple.setOnClickListener(view -> startActivity(new Intent(this, MultipleImagePicking.class)));
     }
 
     @Override
