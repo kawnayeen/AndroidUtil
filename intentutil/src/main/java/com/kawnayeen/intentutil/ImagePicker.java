@@ -35,7 +35,17 @@ public class ImagePicker {
     private static String lastTempImg = "";
     private static boolean strictModeBypassed = false;
 
+    public static Intent getPickImageIntent(Context context, String imagePath) {
+        lastTempImg = imagePath;
+        return constructImagePickerIntent(context);
+    }
+
     public static Intent getPickImageIntent(Context context) {
+        generateNextImgFile(context);
+        return constructImagePickerIntent(context);
+    }
+
+    private static Intent constructImagePickerIntent(Context context) {
         if (!strictModeBypassed) {
             bypassStrictMode();
         }
@@ -43,7 +53,7 @@ public class ImagePicker {
         List<Intent> intentList = new ArrayList<>();
 
         Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         Intent takePhotoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         takePhotoIntent.putExtra("return-data", true);
         takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(prepareNextImgFile(context)));
@@ -71,19 +81,20 @@ public class ImagePicker {
     }
 
     private static File prepareNextImgFile(Context context) {
-        // cleaning up old temp file
-        if (!lastTempImg.isEmpty()) {
+        File imageFile = new File(context.getExternalFilesDir(null), lastTempImg);
+        imageFile.setWritable(true);
+        return imageFile;
+    }
+
+    private static void generateNextImgFile(Context context) {
+        if (!lastTempImg.isEmpty() && lastTempImg.contains(TEMP_IMG_PREFIX)) {
             File file = new File(context.getExternalFilesDir(null), lastTempImg);
             if (file.exists()) {
                 file.delete();
             }
         }
-        // creating new file
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         lastTempImg = TEMP_IMG_PREFIX + timeStamp + TEMP_IMG_SUFFIX;
-        File imageFile = new File(context.getExternalFilesDir(null), lastTempImg);
-        imageFile.setWritable(true);
-        return imageFile;
     }
 
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
