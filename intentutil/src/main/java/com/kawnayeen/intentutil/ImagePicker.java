@@ -37,6 +37,7 @@ public class ImagePicker {
 
     public static Intent getPickImageIntent(Context context, String imagePath) {
         lastTempImg = imagePath;
+        deleteExistingFile(context, lastTempImg);
         return constructImagePickerIntent(context);
     }
 
@@ -88,13 +89,17 @@ public class ImagePicker {
 
     private static void generateNextImgFile(Context context) {
         if (!lastTempImg.isEmpty() && lastTempImg.contains(TEMP_IMG_PREFIX)) {
-            File file = new File(context.getExternalFilesDir(null), lastTempImg);
-            if (file.exists()) {
-                file.delete();
-            }
+            deleteExistingFile(context, lastTempImg);
         }
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         lastTempImg = TEMP_IMG_PREFIX + timeStamp + TEMP_IMG_SUFFIX;
+    }
+
+    private static void deleteExistingFile(Context context, String fileName) {
+        File file = new File(context.getExternalFilesDir(null), fileName);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
