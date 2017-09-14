@@ -1,6 +1,10 @@
 # AndroidUtil
 Repository for having the mostly used utility code needed at almost every android application
 
+Image Picker Demo
+-----------------
+![Demo](https://media.giphy.com/media/xT9IgGhnplPB7NMQMw/giphy.gif)
+
 How To Use
 ==========
 - Check documentation of image picker intent utility [here](https://github.com/kawnayeen/AndroidUtil/tree/master/intentutil). <br/>
