@@ -27,17 +27,9 @@ allprojects {
 
 Now in your app's `build.gradle` file, add the following dependency
 ```
-  compile 'com.github.kawnayeen:AndroidUtil:0.1.2'
+  compile 'com.github.kawnayeen:AndroidUtil:0.1.4'
 ```
 
 Or you can add individual module, if needed.
-- For image compressor `com.github.kawnayeen.AndroidUtil:compressor:0.1.2`
-- For image picker `com.github.kawnayeen.AndroidUtil:intentutil:0.1.2`
-
-Below is the method count for each dependency
-
-Gradle dependency | Method count  
---- | --- 
-`com.github.kawnayeen:AndroidUtil:0.1.2` | 122
-`com.github.kawnayeen.AndroidUtil:compressor:0.1.2` |  39
-`com.github.kawnayeen.AndroidUtil:intentutil:0.1.2` | 83
+- For image compressor `com.github.kawnayeen.AndroidUtil:compressor:0.1.4`
+- For image picker `com.github.kawnayeen.AndroidUtil:intentutil:0.1.4`
