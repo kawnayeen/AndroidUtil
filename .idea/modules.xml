@@ -3,8 +3,12 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidUtil.iml" filepath="$PROJECT_DIR$/AndroidUtil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AndroidUtil.iml" filepath="$PROJECT_DIR$/AndroidUtil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/compressor/compressor.iml" filepath="$PROJECT_DIR$/compressor/compressor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/compressor/compressor.iml" filepath="$PROJECT_DIR$/compressor/compressor.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intentutil/intentutil.iml" filepath="$PROJECT_DIR$/intentutil/intentutil.iml" />
       <module fileurl="file://$PROJECT_DIR$/intentutil/intentutil.iml" filepath="$PROJECT_DIR$/intentutil/intentutil.iml" />
     </modules>
   </component>
