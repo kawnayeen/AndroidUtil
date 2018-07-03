@@ -27,9 +27,9 @@ allprojects {
 
 Now in your app's `build.gradle` file, add the following dependency
 ```
-  compile 'com.github.kawnayeen:AndroidUtil:0.1.4'
+  implementation 'com.github.kawnayeen:AndroidUtil:0.1.5'
 ```
 
 Or you can add individual module, if needed.
-- For image compressor `com.github.kawnayeen.AndroidUtil:compressor:0.1.4`
-- For image picker `com.github.kawnayeen.AndroidUtil:intentutil:0.1.4`
+- For image compressor `com.github.kawnayeen.AndroidUtil:compressor:0.1.5`
+- For image picker `com.github.kawnayeen.AndroidUtil:intentutil:0.1.5`
